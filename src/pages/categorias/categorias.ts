@@ -18,7 +18,7 @@ import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-an
 })
 export class CategoriasPage {
 
-  backetUrl: string = API_CONFIG.bucketBaseUrl;
+  bucketUrl: string = API_CONFIG.bucketBaseUrl;
   items: CategoriaDTO[];
 
 
