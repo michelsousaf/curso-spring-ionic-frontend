@@ -1,3 +1,4 @@
+import { CartService } from './../../services/domain/cart.service';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { ProdutoDTO } from '../../models/produto.dto';
@@ -18,6 +19,7 @@ export class ProdutoDetailPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public produtoSerice: ProdutoService,
+              public cartService: CartService,
               public loadingCtrl: LoadingController
             ) {
   }
@@ -40,6 +42,12 @@ export class ProdutoDetailPage {
       }
       ,
       error=>{});
+  }
+
+  addToCart(produto: ProdutoDTO){
+    this.cartService.addProduto(produto);
+    this.navCtrl.setRoot('CartPage');
+
   }
 
   presentLoading() {
