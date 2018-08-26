@@ -4,13 +4,8 @@ import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-an
 import { StorageService } from '../../services/storage.service';
 import { ClienteService } from '../../services/domain/cliente.service';
 import { API_CONFIG } from '../../config/api.config';
+import { CameraOptions, Camera } from '@ionic-native/camera';
 
-/**
- * Generated class for the ProfilePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -20,6 +15,9 @@ import { API_CONFIG } from '../../config/api.config';
 export class ProfilePage {
 
   cliente: ClienteDTO
+  picture: string;
+  cameraOn: boolean = false;
+
 
   constructor(
     public navCtrl: NavController,
@@ -27,6 +25,7 @@ export class ProfilePage {
     public storage: StorageService,
     public clienteService: ClienteService,
     public loadingCtrl: LoadingController,
+    public camera: Camera
   ) {
   }
 
@@ -68,5 +67,21 @@ export class ProfilePage {
     return loader;
 
   }
+
+  getCameraPicture() {
+    this.cameraOn = true;
+    const options: CameraOptions = {
+     quality: 100,
+     destinationType: this.camera.DestinationType.DATA_URL,
+     encodingType: this.camera.EncodingType.PNG,
+     mediaType: this.camera.MediaType.PICTURE
+   }
+
+   this.camera.getPicture(options).then((imageData) => {
+    this.picture = 'data:image/png;base64,' + imageData;
+    this.cameraOn = false;
+   }, (err) => {
+   });
+ }
 
 }
