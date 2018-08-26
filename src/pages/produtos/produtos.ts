@@ -28,16 +28,20 @@ export class ProdutosPage {
  }
   ionViewDidLoad() {
   let categoria_id = this.navParams.get('categoria_id');
+  let loader = this.presentLoading();
   this.produtoService.findByCategoria(categoria_id)
     .subscribe(response => {
       this.items = response['content'];
+      loader.dismiss();
       this.loadImageUrls();
     },
-  error =>{});
+  error =>{
+    loader.dismiss();
+  });
   }
 
   loadImageUrls() {
-    this.presentLoading();
+
     for (var i=0; i<this.items.length; i++) {
       let item = this.items[i];
       this.produtoService.getSmallImageFromBucket(item.id)
@@ -50,10 +54,10 @@ export class ProdutosPage {
 
   presentLoading() {
     const loader = this.loadingCtrl.create({
-      content: "Please wait...",
-      duration: 1000
+      content: "Aguarde..."
     });
     loader.present();
+    return loader;
 
   }
 

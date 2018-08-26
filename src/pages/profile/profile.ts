@@ -31,12 +31,13 @@ export class ProfilePage {
   }
 
   ionViewDidLoad() {
-    this.presentLoading();
+    let loader = this.presentLoading();
     let localUser = this.storage.getLocalUser();
     if(localUser && localUser.email) {
       this.clienteService.findByEmail(localUser.email)
         .subscribe(response =>{
           this.cliente = response as ClienteDTO;
+          loader.dismiss();
           this.getImageIfExists();
         },
       error => {
@@ -55,15 +56,16 @@ export class ProfilePage {
     .subscribe(response => {
       this.cliente.imageUrl = `${API_CONFIG.bucketBaseUrl}/cp${this.cliente.id}.jpg`;
     },
-    error => {});
+    error => {
+    });
   }
 
   presentLoading() {
     const loader = this.loadingCtrl.create({
-      content: "Please wait...",
-      duration: 1000
+      content: "Please wait..."
     });
     loader.present();
+    return loader;
 
   }
 

@@ -25,14 +25,18 @@ export class ProdutoDetailPage {
   }
 
   ionViewDidLoad() {
-    this.presentLoading();
+
     let produto_id = this.navParams.get('produto_id');
+    let loader = this.presentLoading();
     this.produtoSerice.findById(produto_id)
       .subscribe(response =>{
         this.item = response;
+        loader.dismiss();
         this.getImageUrlifExists();
       },
-      error=>{});
+      error=>{
+        loader.dismiss();
+      });
   }
 
   getImageUrlifExists(){
@@ -52,10 +56,9 @@ export class ProdutoDetailPage {
 
   presentLoading() {
     const loader = this.loadingCtrl.create({
-      content: "Please wait...",
-      duration: 1000
+      content: "Aguarde..."
     });
     loader.present();
-
+    return loader;
   }
 }
