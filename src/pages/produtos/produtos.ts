@@ -1,15 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ProdutoDTO } from '../../models/produto.dto';
-import { ProdutoService } from '../../services/domain/produto.service';
 import { API_CONFIG } from '../../config/api.config';
-
-/**
- * Generated class for the ProdutosPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ProdutoService } from '../../services/domain/produto.service';
+import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 
 @IonicPage()
 @Component({
@@ -25,32 +19,33 @@ export class ProdutosPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public produtoService: ProdutoService,
-    public loadingCtrl: LoadingController
-  ) {
- }
+    public loadingCtrl: LoadingController) {
+  }
+
   ionViewDidLoad() {
     this.loadData();
   }
 
-  loadData(){
-  let categoria_id = this.navParams.get('categoria_id');
-  let loader = this.presentLoading();
-  this.produtoService.findByCategoria(categoria_id, this.page, 10)
-    .subscribe(response => {
-      let start = this.items.length;
-      this.items = this.items.concat(response['content']);
-      let end = this.items.length -1;
-      loader.dismiss();
-      this.loadImageUrls(start, end);
-    },
-  error =>{
-    loader.dismiss();
-  });
+  loadData() {
+    let categoria_id = this.navParams.get('categoria_id');
+    let loader = this.presentLoading();
+    this.produtoService.findByCategoria(categoria_id, this.page, 10)
+      .subscribe(response => {
+        let start = this.items.length;
+        this.items = this.items.concat(response['content']);
+        let end = this.items.length - 1;
+        loader.dismiss();
+        console.log(this.page);
+        console.log(this.items);
+        this.loadImageUrls(start, end);
+      },
+      error => {
+        loader.dismiss();
+      });
   }
 
   loadImageUrls(start: number, end: number) {
-
-    for (var i=start; i<end; i++) {
+    for (var i=start; i<=end; i++) {
       let item = this.items[i];
       this.produtoService.getSmallImageFromBucket(item.id)
         .subscribe(response => {
@@ -60,18 +55,16 @@ export class ProdutosPage {
     }
   }
 
-  showDetail(produto_id: string) {
+  showDetail(produto_id : string) {
     this.navCtrl.push('ProdutoDetailPage', {produto_id: produto_id});
   }
 
-
   presentLoading() {
-    const loader = this.loadingCtrl.create({
+    let loader = this.loadingCtrl.create({
       content: "Aguarde..."
     });
     loader.present();
     return loader;
-
   }
 
   doRefresh(refresher) {
@@ -82,6 +75,7 @@ export class ProdutosPage {
       refresher.complete();
     }, 1000);
   }
+
   doInfinite(infiniteScroll) {
     this.page++;
     this.loadData();
@@ -89,6 +83,4 @@ export class ProdutosPage {
       infiniteScroll.complete();
     }, 1000);
   }
-
-
 }
